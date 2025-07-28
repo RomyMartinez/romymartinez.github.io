@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <style>
+    table {
+      border-collapse: collapse;
+      margin-top: 30px;
+    }
+    input[type="button"] {
+      width: 60px;
+      height: 60px;
+      font-size: 20px;
+    }
+    #calc-output {
+      font-size: 24px;
+      display: inline-block;
+      min-width: 240px;
+    }
+    #input-text {
+      margin-top: 20px;
+      font-size: 16px;
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <input type="text" id="input-text">
+  Você está digitando "<span id="typed"></span>".
+
+  <center>
+    <table>
+      <tbody>
+        <tr>
+          <td colspan="4" align="right" style="border: 1px solid black; padding: 5px;">
+            <span id="calc-output">0</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td><input type="button" value="1" id="button-1"></td>
+          <td><input type="button" value="2" id="button-2"></td>
+          <td><input type="button" value="3" id="button-3"></td>
+          <td><input type="button" value="C" id="button-C"></td>
+        </tr>
+
+        <tr>
+          <td><input type="button" value="4" id="button-4"></td>
+          <td><input type="button" value="5" id="button-5"></td>
+          <td><input type="button" value="6" id="button-6"></td>
+          <td><input type="button" value="+" id="button-+"></td>
+        </tr>
+
+        <tr>
+          <td><input type="button" value="7" id="button-7"></td>
+          <td><input type="button" value="8" id="button-8"></td>
+          <td><input type="button" value="9" id="button-9"></td>
+          <td><input type="button" value="-" id="button--"></td>
+        </tr>
+
+        <tr>
+          <td><input type="button" value="." id="button-dot"></td>
+          <td><input type="button" value="0" id="button-0"></td>
+          <td><input type="button" value="/" id="button-/"></td>
+          <td><input type="button" value="=" id="button-="></td>
+        </tr>       
+      </tbody>
+    </table>
+  </center>
+
+  <script>
+    const output = document.getElementById("calc-output");
+    let currentExpression = "";
+
+    function updateDisplay() {
+      output.textContent = currentExpression;
+    }
+
+    function appendToExpression(value) {
+      currentExpression += value;
+      updateDisplay();
+    }
+
+    function clearExpression() {
+      currentExpression = "";
+      updateDisplay();
+    }
+
+    function calculateResult() {
+      try {
+        const result = eval(currentExpression);
+        currentExpression = result.toString();
+        updateDisplay();
+      } catch (e) {
+        currentExpression = "Erro";
+        updateDisplay();
+        setTimeout(clearExpression, 1000);
+      }
+    }
+
+    const buttons = document.querySelectorAll("input[type='button']");
+    buttons.forEach((btn) => {
+      const value = btn.value;
+
+      if (value === "C") {
+        btn.addEventListener("click", clearExpression);
+      } else if (value === "=") {
+        btn.addEventListener("click", calculateResult);
+      } else if (["+", "-", "/", "*", "."].includes(value) || !isNaN(value)) {
+        btn.addEventListener("click", () => appendToExpression(value));
+      }
+    });
+
+    const inputText = document.getElementById("input-text");
+    const typedSpan = document.getElementById("typed");
+
+    inputText.addEventListener("input", () => {
+      typedSpan.textContent = inputText.value;
+    });
+  </script>
+</body>
+</html>
